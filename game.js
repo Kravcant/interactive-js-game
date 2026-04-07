@@ -2,7 +2,7 @@ let score = 0;
 let damagePerClick = 1;
 let enemiesKilled = 0;
 let level = 1;
-let nextEnemyHP = 10 * level;
+let nextEnemyHP = 5 * level;
 let enemyHP = nextEnemyHP;
 
 // Upgrades arraydata-driven pattern
@@ -52,6 +52,7 @@ function purchaseUpgrade(upgrade) {
   if (score >= upgrade.cost) {
     score -= upgrade.cost;
     damagePerClick += upgrade.bonus;
+    upgrade.cost = Math.round(upgrade.cost * 1.2);
     updateDisplay();
   }
 }
@@ -66,7 +67,7 @@ document.getElementById("click-btn").addEventListener("click", function(){{
         if (enemiesKilled == 10) {
             enemiesKilled = 0;
             level++;
-            nextEnemyHP = 10 * level;
+            nextEnemyHP = 5 * level;
         }
         enemyHP = nextEnemyHP;
     }
