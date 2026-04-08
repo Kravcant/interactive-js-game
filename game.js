@@ -13,6 +13,7 @@ let isBossFight = false;
 let bossTimeRemaining = 0;
 let bossInterval = null;
 let playerWon = false;
+let victoryBannerShown = false;
 
 
 let encounterStep = "normal";
@@ -107,10 +108,9 @@ monsterImage.addEventListener("click", attackEnemy);
 document.getElementById("prevLvl").addEventListener("click", goToPreviousLevel);
 document.getElementById("nextLvl").addEventListener("click", goToNextLevel);
 document.getElementById("restart-btn").addEventListener("click", restartGame);
+document.getElementById("dismiss-btn").addEventListener("click", () => winScreen.classList.add("hidden"));
 
 function attackEnemy() {
-  if (playerWon) return;
-
   enemyHP -= damagePerClick;
   monsterImage.classList.remove("hit");
   void monsterImage.offsetWidth;
@@ -132,39 +132,30 @@ function handleEnemyDefeat() {
   showFloatingText(`+${reward} gold`);
 
   if (currentLevel === FINAL_LEVEL && encounterStep === "finalBoss") {
-    enemyHP = 0;
-    playerWon = true;
     stopBossTimer();
-    showWinScreen();
-    updateDisplay();
+    if (!victoryBannerShown) {
+      victoryBannerShown = true;
+      showVictoryBanner();
+    }
+    currentLevel++;
+    if (currentLevel > maxLevel) maxLevel = currentLevel;
+    encounterStep = "normal";
+    calculateEncounter();
     return;
   }
 
   if (!isBossFight) {
     currentLevel++;
-    if (currentLevel > maxLevel) {
-      maxLevel = currentLevel;
-    }
+    if (currentLevel > maxLevel) maxLevel = currentLevel;
     encounterStep = "normal";
   } else {
     if (encounterStep === "normal") {
       encounterStep = "boss";
     } else if (encounterStep === "boss") {
       currentLevel++;
-      if (currentLevel > maxLevel) {
-        maxLevel = currentLevel;
-      }
+      if (currentLevel > maxLevel) maxLevel = currentLevel;
       encounterStep = "normal";
-    } else if (encounterStep === "finalBoss") {
-      currentLevel++;
     }
-  }
-
-  if (currentLevel > FINAL_LEVEL) {
-    playerWon = true;
-    showWinScreen();
-    updateDisplay();
-    return;
   }
 
   calculateEncounter();
@@ -191,9 +182,9 @@ function calculateEncounter() {
     }
 
     if (encounterStep === "normal") {
-      enemyMaxHP = Math.round(60 + currentLevel * 26 + Math.pow(currentLevel, 1.45));
+      enemyMaxHP = Math.round(60 + currentLevel * 26 + Math.pow(currentLevel, 1.75));
     } else {
-      enemyMaxHP = Math.round(180 + currentLevel * 42 + Math.pow(currentLevel, 1.65));
+      enemyMaxHP = Math.round(180 + currentLevel * 42 + Math.pow(currentLevel, 2));
     }
 
     enemyHP = enemyMaxHP;
@@ -209,18 +200,18 @@ function calculateEncounter() {
 
 function calculateReward() {
   if (currentLevel === FINAL_LEVEL && encounterStep === "finalBoss") {
-    return 5000;
+    return 2000;
   }
 
   if (!isBossFight) {
-    return Math.round(8 + currentLevel * 4);
+    return Math.round(6 + currentLevel);
   }
 
   if (encounterStep === "normal") {
-    return Math.round(18 + currentLevel * 7);
+    return Math.round(10 + currentLevel * 2);
   }
 
-  return Math.round(45 + currentLevel * 14);
+  return Math.round(30 + currentLevel * 4);
 }
 
 function startBossTimer() {
@@ -295,7 +286,7 @@ function buyUpgrade(id) {
   gold -= upgrade.cost;
   damagePerClick += upgrade.bonus;
   upgrade.purchases++;
-  upgrade.cost = Math.round(upgrade.cost * 1.35);
+  upgrade.cost = Math.round(upgrade.cost * 1.75);
 
   showFloatingText(`${upgrade.name} +${upgrade.bonus}`);
   updateDisplay();
@@ -384,6 +375,12 @@ function updateDisplay() {
   if (currentLevel === FINAL_LEVEL) {
     stageDisplay.textContent = "Final Boss";
     nextBossDisplay.textContent = "Final battle";
+  } else if (currentLevel > FINAL_LEVEL && isBossFight && encounterStep === "normal") {
+    stageDisplay.textContent = "Boss Level - Guard";
+    nextBossDisplay.textContent = "Boss next";
+  } else if (currentLevel > FINAL_LEVEL && isBossFight && encounterStep === "boss") {
+    stageDisplay.textContent = "Boss Fight";
+    nextBossDisplay.textContent = "Clear to advance";
   } else if (isBossFight && encounterStep === "normal") {
     stageDisplay.textContent = "Boss Level - Guard";
     nextBossDisplay.textContent = "Boss next";
@@ -391,20 +388,20 @@ function updateDisplay() {
     stageDisplay.textContent = "Boss Fight";
     nextBossDisplay.textContent = "Clear to advance";
   } else {
-    stageDisplay.textContent = "Normal";
+    stageDisplay.textContent = currentLevel > FINAL_LEVEL ? "Endless Mode" : "Normal";
     const remaining = 5 - (currentLevel % 5);
     nextBossDisplay.textContent = remaining === 5 ? "Next level" : `${remaining} levels`;
   }
 
-  document.getElementById("prevLvl").disabled = currentLevel <= 1 || playerWon;
-  document.getElementById("nextLvl").disabled = currentLevel >= maxLevel || playerWon;
+  document.getElementById("prevLvl").disabled = currentLevel <= 1;
+  document.getElementById("nextLvl").disabled = currentLevel >= maxLevel;
 
   updateCharacterDisplay();
   renderUpgrades();
 }
 
 function goToPreviousLevel() {
-  if (currentLevel <= 1 || playerWon) return;
+  if (currentLevel <= 1) return;
 
   currentLevel--;
   encounterStep = "normal";
@@ -412,7 +409,7 @@ function goToPreviousLevel() {
 }
 
 function goToNextLevel() {
-  if (currentLevel >= maxLevel || playerWon) return;
+  if (currentLevel >= maxLevel) return;
 
   currentLevel++;
   encounterStep = "normal";
@@ -434,9 +431,12 @@ function showFloatingText(text) {
   }, 900);
 }
 
-function showWinScreen() {
-  winText.textContent = `You reached level ${FINAL_LEVEL} and defeated the final boss with ${gold} gold and ${enemiesKilled} total kills.`;
+function showVictoryBanner() {
+  winText.textContent = `You defeated the Totem of the Deep! The realms tremble — but the monsters keep coming. How far can you go?`;
   winScreen.classList.remove("hidden");
+  setTimeout(() => {
+    winScreen.classList.add("hidden");
+  }, 5000);
 }
 
 function restartGame() {
@@ -450,6 +450,7 @@ function restartGame() {
   isBossFight = false;
   bossTimeRemaining = 0;
   playerWon = false;
+  victoryBannerShown = false;
   encounterStep = "normal";
 
   upgrades.forEach((upgrade, index) => {
