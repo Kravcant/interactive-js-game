@@ -1,0 +1,10 @@
+#level-flex {
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+
+#timer-display {
+    display: none;
+    font-weight: bold;
+}

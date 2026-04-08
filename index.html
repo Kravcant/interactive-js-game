@@ -2,13 +2,25 @@
 <head>
   <meta charset="UTF-8">
   <title>Clicker Game</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Clicker RPG</h1>
   <p id="score-display">Score: 0</p>
   <p id="rate-display">Damage per click: 1</p>
-  <p id="health-display">HP: 10</p>
-  <button id="click-btn">Click!</button>
+  <p id="kills-display">Enemies Killed: 0</p>
+  <p id="debug-display">kills for next level: 0</p>
+  <p id="health-display">HP: 5</p>
+  <button id="attack-btn">Attack!</button>
+
+  <div id="level-flex">
+    <button id="prevLvl" disabled="true">Prev</button>
+    <p id="level-display">Level: 1</p>
+    <button id="nextLvl" disabled="true">Next</button>
+  </div>
+  
+  <p id="timer-display">Time Remaining: 20s</p>
+
   <h2>Upgrades</h2>
   <div id="upgrades"></div>
   <script src="game.js"></script>
