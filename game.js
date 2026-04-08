@@ -70,7 +70,7 @@ function updateDisplay() {
   document.getElementById("kills-display").textContent = `Enemies Killed: ${enemiesKilled}`;
   document.getElementById("health-display").textContent = `HP: ${enemyHP}`;
   document.getElementById("level-display").textContent = `Level: ${currentLevel}`;
-  document.getElementById("debug-display").textContent = `kills for next level: ${killsForNextLevel}`;
+  document.getElementById("next-display").textContent = `Kills for Next Level: ${killsForNextLevel}`;
   document.getElementById("prevLvl").disabled = currentLevel == 1;
   document.getElementById("nextLvl").disabled = currentLevel == maxLevel;
   updateTimerDisplay();
