@@ -1,28 +1,124 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Clicker Game</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bladebound Realms</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Clicker RPG</h1>
-  <p id="score-display">Score: 0</p>
-  <p id="rate-display">Damage per click: 1</p>
-  <p id="kills-display">Enemies Killed: 0</p>
-  <p id="debug-display">kills for next level: 0</p>
-  <p id="health-display">HP: 5</p>
-  <button id="attack-btn">Attack!</button>
+  <div class="game-shell">
+    <header class="top-bar">
+      <div>
+        <h1>Bladebound Realms</h1>
+        <p class="subtitle">Fight monsters, earn gold, and rise through the realms.</p>
+      </div>
 
-  <div id="level-flex">
-    <button id="prevLvl" disabled="true">Prev</button>
-    <p id="level-display">Level: 1</p>
-    <button id="nextLvl" disabled="true">Next</button>
+      <div class="top-stats">
+        <div class="stat-card">
+          <span class="stat-label">Gold</span>
+          <span class="stat-value" id="gold-display">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Damage</span>
+          <span class="stat-value" id="damage-display">1</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Level</span>
+          <span class="stat-value" id="level-display">1</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Kills</span>
+          <span class="stat-value" id="kills-display">0</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <aside class="left-panel panel">
+        <h2>Hero</h2>
+        <div class="hero-stage">
+          <img id="hero-image" src="Assets/Character/Char1.png" alt="Hero character" />
+        </div>
+
+        <div class="info-stack">
+          <div class="info-row">
+            <span>Current Realm</span>
+            <strong id="map-name-display">Whispering Forest</strong>
+          </div>
+          <div class="info-row">
+            <span>Enemy</span>
+            <strong id="enemy-name-display">Venom Snake</strong>
+          </div>
+          <div class="info-row">
+            <span>Stage</span>
+            <strong id="stage-display">Normal</strong>
+          </div>
+          <div class="info-row">
+            <span>Next Boss In</span>
+            <strong id="next-boss-display">5 levels</strong>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button id="prevLvl">Prev</button>
+          <button id="nextLvl">Next</button>
+        </div>
+      </aside>
+
+      <section class="battle-panel panel">
+        <div id="battlefield" class="battlefield">
+          <div class="battle-overlay">
+            <div class="enemy-ui">
+              <div class="enemy-header">
+                <h2 id="battle-title">Venom Snake</h2>
+                <span id="boss-badge" class="boss-badge hidden">BOSS</span>
+              </div>
+
+              <div class="health-wrap">
+                <div class="health-bar">
+                  <div id="health-fill" class="health-fill"></div>
+                </div>
+                <div class="health-text">
+                  <span id="health-display">HP: 10 / 10</span>
+                  <span id="timer-display" class="timer hidden">20s</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="floating-text-layer"></div>
+
+            <div class="monster-zone">
+              <img id="monster-image" src="Assets/Monsters/Monster01-1.png" alt="Monster" />
+            </div>
+
+            <div class="battle-controls">
+              <button id="attack-btn">Attack Monster</button>
+              <p class="helper-text">Tip: you can click the monster too.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="right-panel panel">
+        <div class="shop-header">
+          <h2>Upgrades</h2>
+          <p>Buy power to defeat stronger enemies.</p>
+        </div>
+
+        <div id="upgrades" class="upgrades-list"></div>
+      </aside>
+    </main>
   </div>
-  
-  <p id="timer-display">Time Remaining: 20s</p>
 
-  <h2>Upgrades</h2>
-  <div id="upgrades"></div>
+  <div id="win-screen" class="win-screen hidden">
+    <div class="win-card">
+      <h2>You Conquered the Realms!</h2>
+      <p id="win-text">Your hero has defeated every challenge in Bladebound Realms.</p>
+      <button id="restart-btn">Play Again</button>
+    </div>
+  </div>
+
   <script src="game.js"></script>
 </body>
 </html>
